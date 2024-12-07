@@ -24,12 +24,10 @@
         <h2>Daily Expenses (Daily Limit: ₱300)</h2>
         <canvas id="dailyChart"></canvas>
     </div>
-
     <div class="chart-container">
         <h2>Weekly Expenses (Weekly Limit: ₱1500)</h2>
         <canvas id="weeklyChart"></canvas>
     </div>
-
     <script>
         // Daily Expenses Data
         const dailyData = {
@@ -50,7 +48,6 @@
                 borderWidth: 1
             }]
         };
-
         // Weekly Expenses Data
         const weeklyData = {
             labels: [
@@ -67,10 +64,21 @@
                 borderWidth: 1
             }]
         };
-
         // Chart configuration options
         const chartOptions = {
             responsive: true,
+            plugins: {
+                datalabels: {
+                    anchor: 'end',
+                    align: 'top',
+                    formatter: function(value) {
+                        return '₱' + value;
+                    },
+                    font: {
+                        weight: 'bold'
+                    }
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: true,
@@ -78,28 +86,35 @@
                 }
             }
         };
-
-        // Create Daily Expenses Chart
-        new Chart(document.getElementById('dailyChart'), {
-            type: 'bar',
-            data: dailyData,
-            options: {
-                ...chartOptions,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 300
+        // Script to add Chart.js Datalabels plugin
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0';
+        script.onload = function() {
+            // Create Daily Expenses Chart
+            new Chart(document.getElementById('dailyChart'), {
+                type: 'bar',
+                data: dailyData,
+                plugins: [ChartDataLabels],
+                options: {
+                    ...chartOptions,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 300
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        // Create Weekly Expenses Chart
-        new Chart(document.getElementById('weeklyChart'), {
-            type: 'bar',
-            data: weeklyData,
-            options: chartOptions
-        });
+            // Create Weekly Expenses Chart
+            new Chart(document.getElementById('weeklyChart'), {
+                type: 'bar',
+                data: weeklyData,
+                plugins: [ChartDataLabels],
+                options: chartOptions
+            });
+        };
+        document.head.appendChild(script);
     </script>
 </body>
 </html>
